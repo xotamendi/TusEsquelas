@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>En su Memoria — Esquelas y Obituarios</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f5f0e8; --dark: #1a1714; --dark2: #2e2820;
+      --warm-gray: #7a7167; --gold: #c0a060; --gold-light: #e8d5a0;
+      --border: #d8cfc0; --card-bg: #fdfaf4; --red: #b04040;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--cream); color: var(--dark); font-family: 'Raleway', sans-serif; font-weight: 300; min-height: 100vh; }
+
+    header { background: var(--dark); position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 24px rgba(0,0,0,0.5); }
+    .header-inner { max-width: 1160px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 15px 28px; gap: 16px; flex-wrap: wrap; }
+    .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.55rem; font-weight: 300; color: var(--gold-light); cursor: pointer; white-space: nowrap; }
+    .logo em { color: var(--gold); font-style: italic; }
+    nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .nav-btn { background: none; border: none; color: #bbb5a5; font-family: 'Raleway', sans-serif; font-size: 0.72rem; letter-spacing: 0.13em; text-transform: uppercase; padding: 7px 13px; cursor: pointer; border-radius: 2px; transition: all 0.2s; white-space: nowrap; }
+    .nav-btn:hover, .nav-btn.active { background: rgba(192,160,96,0.15); color: var(--gold-light); }
+    .nav-btn.cta { background: var(--gold); color: var(--dark); font-weight: 600; }
+    .nav-btn.cta:hover { background: var(--gold-light); }
+    #userName { font-size: 0.75rem; color: var(--gold-light); padding: 0 6px; }
+    .nav-sep { width: 1px; height: 18px; background: #3a3530; margin: 0 4px; }
+
+    .page { display: none; }
+    .page.active { display: block; animation: pgIn 0.3s ease; }
+    @keyframes pgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    .hero { background: var(--dark); text-align: center; padding: 64px 20px 52px; border-bottom: 1px solid #3a3530; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 60%, #2e2820 0%, #1a1714 70%); }
+    .hero-c { position: relative; z-index: 1; }
+    .hero-orn { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 10px; letter-spacing: 0.5em; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 300; color: var(--cream); margin-bottom: 8px; }
+    .hero p { color: #a89880; font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; }
+
+    .search-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 18px 20px; }
+    .search-inner { max-width: 1160px; margin: 0 auto; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .search-inner input, .search-inner select { border: 1px solid var(--border); background: var(--cream); color: var(--dark); font-family: 'Raleway', sans-serif; font-size: 0.86rem; padding: 9px 13px; border-radius: 2px; outline: none; transition: border-color 0.2s; }
+    .search-inner input:focus, .search-inner select:focus { border-color: var(--gold); }
+    #sNombre { flex: 1; min-width: 160px; }
+    #sCiudad { min-width: 145px; }
+    #sDesde, #sHasta { min-width: 140px; }
+    .search-lbl { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--warm-gray); white-space: nowrap; }
+
+    .btn { border: none; font-family: 'Raleway', sans-serif; cursor: pointer; border-radius: 2px; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.2s; }
+    .btn-dark { background: var(--dark); color: var(--gold-light); font-size: 0.75rem; padding: 9px 20px; }
+    .btn-dark:hover { background: var(--dark2); }
+    .btn-outline { background: transparent; color: var(--warm-gray); border: 1px solid var(--border); font-size: 0.75rem; padding: 9px 14px; }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-gold { background: var(--gold); color: var(--dark); font-size: 0.78rem; font-weight: 600; padding: 11px 28px; }
+    .btn-gold:hover { background: var(--gold-light); }
+    .btn-gold:active { transform: scale(0.98); }
+    .btn-sm { padding: 6px 12px !important; font-size: 0.68rem !important; }
+    .btn-approve { background: #1c3a1c; color: #b8e8b8; border: 1px solid #3a6a3a; font-size: 0.72rem; padding: 7px 12px; }
+    .btn-approve:hover { background: #3a6a3a; }
+    .btn-reject { background: transparent; color: #cc8888; border: 1px solid rgba(176,64,64,0.3); font-size: 0.72rem; padding: 7px 12px; }
+    .btn-reject:hover { background: var(--red); color: #fff; }
+    .btn-del { background: transparent; color: #cc6666; border: 1px solid rgba(176,64,64,0.2); font-size: 0.68rem; padding: 5px 10px; }
+    .btn-del:hover { background: var(--red); color: #fff; }
+
+    .results-bar { max-width: 1160px; margin: 20px auto 0; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+    .results-count { font-size: 0.73rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-gray); }
+    .orn { color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 1rem; letter-spacing: 0.3em; }
+
+    .cards-grid { max-width: 1160px; margin: 20px auto 10px; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(290px,1fr)); gap: 22px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-top: 3px solid var(--gold); transition: box-shadow 0.25s, transform 0.25s; animation: fadeUp 0.4s ease both; }
+    .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.12); transform: translateY(-3px); }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    .card-head { background: var(--dark); padding: 20px 22px 15px; text-align: center; }
+    .card-cross { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--gold); margin-bottom: 4px; }
+    .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; color: var(--cream); line-height: 1.25; }
+    .card-dates { margin-top: 5px; font-size: 0.73rem; color: #a89880; }
+    .card-body { padding: 15px 22px 16px; }
+    .card-city { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 9px; }
+    .card-excerpt { font-family: 'Cormorant Garamond', serif; font-size: 0.93rem; font-style: italic; color: #4a4540; line-height: 1.65; border-left: 2px solid var(--gold-light); padding-left: 10px; margin-bottom: 10px; }
+    .card-familia { font-size: 0.74rem; color: var(--warm-gray); }
+    .card-familia strong { color: var(--dark); font-weight: 500; }
+    .card-foot { border-top: 1px solid var(--border); padding: 9px 22px; display: flex; justify-content: space-between; align-items: center; background: #faf6ef; }
+    .card-funeral-txt { font-size: 0.68rem; color: var(--warm-gray); }
+    .card-funeral-txt strong { color: var(--dark); font-weight: 500; }
+    .badge { display: inline-block; font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 6px; border-radius: 2px; margin-left: 6px; vertical-align: middle; }
+    .badge-new { background: var(--gold); color: var(--dark); }
+
+    .pagination { max-width: 1160px; margin: 10px auto 50px; padding: 0 20px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .pg-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--warm-gray); font-family: 'Raleway', sans-serif; font-size: 0.75rem; padding: 7px 13px; cursor: pointer; border-radius: 2px; transition: all 0.2s; }
+    .pg-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .pg-btn.active { background: var(--dark); color: var(--gold-light); border-color: var(--dark); }
+    .pg-btn:disabled { opacity: 0.35; cursor: default; }
+
+    .empty { text-align: center; padding: 60px 20px; color: var(--warm-gray); grid-column: 1/-1; }
+    .empty .e-icon { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--gold-light); margin-bottom: 10px; }
+    .empty p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; }
+    .loader { display: flex; justify-content: center; align-items: center; padding: 60px; grid-column: 1/-1; }
+    .spinner { width: 34px; height: 34px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(12,10,8,0.9); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--card-bg); border: 1px solid var(--border); border-top: 4px solid var(--gold); max-width: 580px; width: 100%; max-height: 92vh; overflow-y: auto; animation: modalIn 0.28s ease; }
+    @keyframes modalIn { from { opacity:0; transform:scale(0.95) translateY(18px); } to { opacity:1; transform:scale(1) translateY(0); } }
+    .modal-top { background: var(--dark); padding: 28px 30px 22px; text-align: center; }
+    .modal-cross { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; color: var(--gold); margin-bottom: 7px; }
+    .modal-name { font-family: 'Cormorant Garamond', serif; font-size: 1.85rem; color: var(--cream); font-weight: 300; }
+    .modal-dates { color: #a89880; font-size: 0.8rem; letter-spacing: 0.12em; margin-top: 5px; }
+    .modal-body { padding: 24px 30px; }
+    .modal-section { margin-bottom: 16px; }
+    .modal-lbl { font-size: 0.63rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .modal-val { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-style: italic; color: #3a3530; line-height: 1.7; }
+    .modal-val.plain { font-style: normal; font-size: 0.87rem; font-family: 'Raleway', sans-serif; font-weight: 300; }
+    .modal-hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .modal-close { display: block; width: 100%; background: var(--dark); color: var(--gold-light); border: none; padding: 13px; font-family: 'Raleway', sans-serif; font-size: 0.73rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .modal-close:hover { background: var(--dark2); }
+
+    .auth-wrap { max-width: 420px; margin: 60px auto; padding: 0 20px 60px; }
+    .auth-card { background: var(--card-bg); border: 1px solid var(--border); border-top: 3px solid var(--gold); padding: 34px 34px 28px; }
+    .auth-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--dark); margin-bottom: 5px; }
+    .auth-sub { font-size: 0.76rem; color: var(--warm-gray); margin-bottom: 26px; }
+    .auth-tabs { display: flex; margin-bottom: 26px; border-bottom: 1px solid var(--border); }
+    .auth-tab { flex: 1; background: none; border: none; font-family: 'Raleway', sans-serif; font-size: 0.73rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--warm-gray); padding: 10px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+    .auth-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .auth-form { display: none; }
+    .auth-form.active { display: block; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+    .form-group label { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-gray); }
+    .form-group input, .form-group select, .form-group textarea { border: 1px solid var(--border); background: var(--cream); color: var(--dark); font-family: 'Raleway', sans-serif; font-size: 0.87rem; font-weight: 300; padding: 10px 13px; border-radius: 2px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(192,160,96,0.1); }
+    .form-group textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
+    .form-group.err-active input, .form-group.err-active textarea, .form-group.err-active select { border-color: var(--red); }
+    .form-group .err { font-size: 0.67rem; color: var(--red); display: none; }
+    .form-group.err-active .err { display: block; }
+    .form-group .hint { font-size: 0.67rem; color: #aaa; }
+    .req { color: var(--gold); }
+    .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+    .section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--dark); padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+    .section-title .si { color: var(--gold); }
+    .alert { padding: 12px 16px; border-radius: 2px; font-size: 0.82rem; margin-bottom: 16px; }
+    .alert-error { background: #2e1515; border: 1px solid var(--red); border-left: 4px solid var(--red); color: #e88888; }
+    .alert-success { background: #1a2a1a; border: 1px solid #3a6a3a; border-left: 4px solid #5aaa5a; color: #90cc90; }
+
+    .pub-hero { background: var(--dark); text-align: center; padding: 50px 20px 38px; border-bottom: 1px solid #3a3530; position: relative; }
+    .pub-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, #2a2218, #1a1714); }
+    .pub-hero-c { position: relative; z-index: 1; }
+    .pub-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem,4vw,2.7rem); font-weight: 300; color: var(--cream); margin-bottom: 7px; }
+    .pub-hero p { color: #a89880; font-size: 0.8rem; letter-spacing: 0.13em; text-transform: uppercase; }
+    .form-wrap { max-width: 740px; margin: 36px auto 56px; padding: 0 20px; }
+    .form-card { background: var(--card-bg); border: 1px solid var(--border); border-top: 3px solid var(--gold); padding: 34px 38px; }
+    .preview-lbl { font-size: 0.68rem; letter-spacing: 0.17em; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .preview-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .preview-box { background: var(--dark); border: 1px solid #3a3530; padding: 22px; text-align: center; opacity: 0.4; transition: opacity 0.35s; }
+    .preview-box.live { opacity: 1; }
+    .pv-cross { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--gold); }
+    .pv-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--cream); margin: 5px 0 3px; }
+    .pv-dates { font-size: 0.74rem; color: #a89880; }
+    .pv-city { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--warm-gray); margin-top: 9px; }
+    .pv-text { font-family: 'Cormorant Garamond', serif; font-size: 0.93rem; font-style: italic; color: #ccc5b5; line-height: 1.68; margin-top: 13px; border-left: 2px solid rgba(192,160,96,0.3); padding-left: 11px; text-align: left; }
+    .submit-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+    .notice { font-size: 0.71rem; color: var(--warm-gray); }
+    .notice strong { color: var(--gold); }
+
+    .admin-layout { max-width: 1160px; margin: 0 auto; padding: 28px 20px 60px; display: grid; grid-template-columns: 210px 1fr; gap: 22px; align-items: start; }
+    .admin-sidebar { background: var(--card-bg); border: 1px solid var(--border); border-top: 3px solid var(--gold); }
+    .admin-sidebar-hd { background: var(--dark); color: var(--gold-light); font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 11px 16px; }
+    .admin-nav-item { display: flex; align-items: center; gap: 8px; padding: 11px 16px; font-size: 0.78rem; color: var(--warm-gray); cursor: pointer; border-bottom: 1px solid var(--border); transition: all 0.2s; }
+    .admin-nav-item:hover, .admin-nav-item.active { background: rgba(192,160,96,0.07); color: var(--dark); }
+    .count-badge { margin-left: auto; background: var(--gold); color: var(--dark); font-size: 0.62rem; font-weight: 600; padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
+    .admin-section { display: none; }
+    .admin-section.active { display: block; }
+    .admin-section-hd { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; margin-bottom: 20px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 28px; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 18px 16px; text-align: center; }
+    .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--gold); line-height: 1; }
+    .stat-lbl { font-size: 0.67rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--warm-gray); margin-top: 5px; }
+    .admin-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); font-size: 0.81rem; }
+    .admin-table th { background: var(--dark); color: var(--gold-light); font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 10px 14px; text-align: left; font-weight: 400; }
+    .admin-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: rgba(192,160,96,0.04); }
+    .eb { font-size: 0.63rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; }
+    .eb-aprobada { background: #1c3a1c; color: #7acc7a; }
+    .eb-pendiente { background: #3a3010; color: #ccaa44; }
+    .eb-rechazada { background: #3a1010; color: #cc6666; }
+    .td-act { display: flex; gap: 5px; flex-wrap: wrap; }
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .filter-btn { background: transparent; border: 1px solid var(--border); color: var(--warm-gray); font-family: 'Raleway', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 12px; cursor: pointer; border-radius: 2px; transition: all 0.2s; }
+    .filter-btn:hover, .filter-btn.active { background: var(--dark); color: var(--gold-light); border-color: var(--dark); }
+
+    footer { background: var(--dark); color: #6a6258; text-align: center; padding: 26px 20px; font-size: 0.7rem; letter-spacing: 0.1em; }
+    footer .f-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--gold); margin-bottom: 6px; }
+
+    @media (max-width: 700px) {
+      .header-inner { padding: 11px 14px; }
+      .admin-layout { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .form-row2 { grid-template-columns: 1fr; }
+      .form-card, .auth-card { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo" onclick="goHome()">En <em>su</em> Memoria</div>
+    <nav>
+      <button class="nav-btn active" id="nb-home" onclick="showPage('home')">Esquelas</button>
+      <div class="nav-sep"></div>
+      <div id="guestMenu">
+        <button class="nav-btn" onclick="showPage('auth')">Iniciar sesión</button>
+        <button class="nav-btn cta" onclick="showPage('publish')">✦ Publicar</button>
+      </div>
+      <div id="userMenu" style="display:none;align-items:center;gap:4px;">
+        <span id="userName"></span>
+        <button class="nav-btn cta" onclick="showPage('publish')">✦ Publicar</button>
+        <button class="nav-btn" id="adminBtn" style="display:none" onclick="showPage('admin')">Admin</button>
+        <button class="nav-btn" onclick="logout()">Salir</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-c">
+      <div class="hero-orn">✦ ✦ ✦</div>
+      <h1>Esquelas y Obituarios</h1>
+      <p>Consulta los fallecidos de tu ciudad o pueblo</p>
+    </div>
+  </div>
+  <div class="search-bar">
+    <div class="search-inner">
+      <input id="sNombre" type="text" placeholder="Buscar por nombre…"/>
+      <select id="sCiudad"><option value="">— Todas las ciudades —</option></select>
+      <span class="search-lbl">Desde</span>
+      <input id="sDesde" type="date"/>
+      <span class="search-lbl">Hasta</span>
+      <input id="sHasta" type="date"/>
+      <button class="btn btn-dark" onclick="buscar()">Buscar</button>
+      <button class="btn btn-outline" onclick="limpiar()">Limpiar</button>
+    </div>
+  </div>
+  <div class="results-bar">
+    <span class="results-count" id="resultCount">Cargando…</span>
+    <span class="orn">— ✦ —</span>
+  </div>
+  <div class="cards-grid" id="cardsGrid"><div class="loader"><div class="spinner"></div></div></div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- AUTH -->
+<div id="page-auth" class="page">
+  <div style="background:var(--dark);padding:40px 20px 32px;text-align:center;border-bottom:1px solid #3a3530;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);letter-spacing:0.4em;">✦ ✦ ✦</div>
+  </div>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-title">Acceso</div>
+      <div class="auth-sub">Entra en tu cuenta o regístrate para publicar esquelas</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Iniciar sesión</button>
+        <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Registrarse</button>
+      </div>
+      <div class="auth-form active" id="form-login">
+        <div id="loginAlert"></div>
+        <div class="form-group" id="fg-le"><label>Email <span class="req">*</span></label><input id="lEmail" type="email" placeholder="tu@email.com"/><span class="err">Requerido.</span></div>
+        <div class="form-group" id="fg-lp"><label>Contraseña <span class="req">*</span></label><input id="lPass" type="password" placeholder="••••••••"/><span class="err">Requerido.</span></div>
+        <button class="btn btn-gold" style="width:100%;margin-top:6px;" onclick="doLogin()">Entrar</button>
+      </div>
+      <div class="auth-form" id="form-register">
+        <div id="regAlert"></div>
+        <div class="form-group" id="fg-rn"><label>Nombre <span class="req">*</span></label><input id="rNombre" type="text" placeholder="Tu nombre"/><span class="err">Requerido.</span></div>
+        <div class="form-group" id="fg-re"><label>Email <span class="req">*</span></label><input id="rEmail" type="email" placeholder="tu@email.com"/><span class="err">Requerido.</span></div>
+        <div class="form-group" id="fg-rp"><label>Contraseña <span class="req">*</span></label><input id="rPass" type="password" placeholder="Mínimo 6 caracteres"/><span class="err">Mínimo 6 caracteres.</span></div>
+        <button class="btn btn-gold" style="width:100%;margin-top:6px;" onclick="doRegister()">Crear cuenta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PUBLISH -->
+<div id="page-publish" class="page">
+  <div class="pub-hero">
+    <div class="pub-hero-c">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);letter-spacing:0.4em;margin-bottom:9px;">✦ ✦ ✦</div>
+      <h1>Publicar una Esquela</h1>
+      <p>Honra la memoria de tu ser querido</p>
+    </div>
+  </div>
+  <div class="form-wrap">
+    <div id="pubAlert"></div>
+    <div class="form-card">
+      <div class="section-title"><span class="si">✝</span> Datos del fallecido</div>
+      <div class="form-row2">
+        <div class="form-group" id="fg-pn"><label>Nombre completo <span class="req">*</span></label><input id="pNombre" type="text" placeholder="Nombre y apellidos" oninput="updatePrev()"/><span class="err">Obligatorio.</span></div>
+        <div class="form-group" id="fg-pc"><label>Ciudad o pueblo <span class="req">*</span></label><input id="pCiudad" type="text" placeholder="p.ej. Bilbao, Irun…" oninput="updatePrev()"/><span class="err">Obligatorio.</span></div>
+      </div>
+      <div class="form-row2">
+        <div class="form-group" id="fg-pnac"><label>Fecha de nacimiento <span class="req">*</span></label><input id="pNac" type="date" oninput="updatePrev()"/><span class="err">Obligatorio.</span></div>
+        <div class="form-group" id="fg-pfall"><label>Fecha de fallecimiento <span class="req">*</span></label><input id="pFall" type="date" oninput="updatePrev()"/><span class="err">Obligatorio.</span></div>
+      </div>
+      <hr class="form-divider"/>
+      <div class="section-title"><span class="si">✦</span> Texto</div>
+      <div class="form-group" id="fg-pt"><label>Texto de la esquela <span class="req">*</span></label><textarea id="pTexto" rows="4" placeholder="Unas palabras de recuerdo…" oninput="updatePrev()"></textarea><span class="err">Obligatorio.</span></div>
+      <div class="form-group"><label>Familia</label><input id="pFamilia" type="text" placeholder="p.ej. Su esposa Ana, sus hijos…"/><span class="hint">Opcional</span></div>
+      <hr class="form-divider"/>
+      <div class="section-title"><span class="si">✦</span> Funeral</div>
+      <div class="form-group"><label>Lugar y hora del funeral</label><input id="pFuneral" type="text" placeholder="p.ej. Martes 4 a las 11:00 h en la Parroquia de…"/></div>
+      <div class="form-group"><label>Lugar de entierro o crematorio</label><input id="pEntierro" type="text" placeholder="p.ej. Cementerio Municipal de…"/></div>
+      <hr class="form-divider"/>
+      <div class="preview-lbl">Vista previa</div>
+      <div class="preview-box" id="prevBox">
+        <div class="pv-cross">✝</div>
+        <div class="pv-name" id="pvN">Nombre Apellidos</div>
+        <div class="pv-dates" id="pvF">✦ Nacimiento — Fallecimiento ✦</div>
+        <div class="pv-city" id="pvC">Ciudad</div>
+        <div class="pv-text" id="pvT">El texto aparecerá aquí…</div>
+      </div>
+      <div class="submit-row">
+        <button class="btn btn-gold" onclick="publicar()">Enviar esquela</button>
+        <button class="btn btn-outline" onclick="resetPub()">Limpiar</button>
+        <span class="notice">Revisada antes de publicarse. <strong>Gratuito.</strong></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="page-admin" class="page">
+  <div style="background:var(--dark);padding:20px 28px;border-bottom:1px solid #3a3530;">
+    <div style="max-width:1160px;margin:0 auto;">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold-light);">✦ Panel de Administración</span>
+    </div>
+  </div>
+  <div class="admin-layout">
+    <div class="admin-sidebar">
+      <div class="admin-sidebar-hd">Menú</div>
+      <div class="admin-nav-item active" onclick="switchAdmin('stats',this)">📊 Estadísticas</div>
+      <div class="admin-nav-item" onclick="switchAdmin('pend',this)">⏳ Pendientes <span class="count-badge" id="badgePend">0</span></div>
+      <div class="admin-nav-item" onclick="switchAdmin('all',this)">📋 Todas las esquelas</div>
+    </div>
+    <div>
+      <div class="admin-section active" id="as-stats">
+        <div class="admin-section-hd">Estadísticas</div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num" id="stTotal">—</div><div class="stat-lbl">Total</div></div>
+          <div class="stat-card"><div class="stat-num" id="stApro">—</div><div class="stat-lbl">Publicadas</div></div>
+          <div class="stat-card"><div class="stat-num" id="stPend">—</div><div class="stat-lbl">Pendientes</div></div>
+          <div class="stat-card"><div class="stat-num" id="stUsers">—</div><div class="stat-lbl">Usuarios</div></div>
+        </div>
+      </div>
+      <div class="admin-section" id="as-pend">
+        <div class="admin-section-hd">Pendientes de revisión</div>
+        <div id="tablePend"><div class="loader"><div class="spinner"></div></div></div>
+      </div>
+      <div class="admin-section" id="as-all">
+        <div class="admin-section-hd">Todas las esquelas</div>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterAll('',this)">Todas</button>
+          <button class="filter-btn" onclick="filterAll('aprobada',this)">Aprobadas</button>
+          <button class="filter-btn" onclick="filterAll('pendiente',this)">Pendientes</button>
+          <button class="filter-btn" onclick="filterAll('rechazada',this)">Rechazadas</button>
+        </div>
+        <div id="tableAll"><div class="loader"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-cross">✝</div>
+      <div class="modal-name" id="mNombre">—</div>
+      <div class="modal-dates" id="mFechas">—</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section"><div class="modal-lbl">Lugar</div><div class="modal-val plain" id="mCiudad">—</div></div>
+      <div class="modal-section"><div class="modal-lbl">Esquela</div><div class="modal-val" id="mTexto">—</div></div>
+      <hr class="modal-hr"/>
+      <div class="modal-section"><div class="modal-lbl">Familia</div><div class="modal-val plain" id="mFamilia">—</div></div>
+      <div class="modal-section"><div class="modal-lbl">Funeral</div><div class="modal-val plain" id="mFuneral">—</div></div>
+      <div class="modal-section"><div class="modal-lbl">Entierro / Crematorio</div><div class="modal-val plain" id="mEntierro">—</div></div>
+    </div>
+    <button class="modal-close" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<footer>
+  <div class="f-logo">En su Memoria</div>
+  <p>Servicio de esquelas y obituarios para toda España</p>
+  <p style="margin-top:5px;">© 2026 · Privacidad · Aviso legal · Contacto</p>
+</footer>
+
+<script>
+let user  = JSON.parse(localStorage.getItem('esm_user') || 'null');
+let token = localStorage.getItem('esm_token') || '';
+let curPage = 1;
+let adminFlt = '';
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+// ── AUTH UI ──
+function updateUI() {
+  if (user) {
+    document.getElementById('guestMenu').style.display = 'none';
+    document.getElementById('userMenu').style.display  = 'flex';
+    document.getElementById('userName').textContent    = user.nombre;
+    document.getElementById('adminBtn').style.display  = user.rol === 'admin' ? 'inline-block' : 'none';
+  } else {
+    document.getElementById('guestMenu').style.display = 'flex';
+    document.getElementById('userMenu').style.display  = 'none';
+  }
+}
+function logout() {
+  localStorage.clear(); user = null; token = '';
+  updateUI(); showPage('home');
+}
+
+// ── PAGES ──
+function showPage(name) {
+  if (name === 'publish' && !user) { showPage('auth'); return; }
+  if (name === 'admin' && (!user || user.rol !== 'admin')) return;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const nb = document.getElementById('nb-' + name);
+  if (nb) nb.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (name === 'home')  { curPage = 1; loadEsquelas(); loadCities(); }
+  if (name === 'admin') { loadStats(); loadPend(); loadAll(); }
+}
+function goHome() { showPage('home'); }
+
+// ── API ──
+async function api(url, opts = {}) {
+  const h = { 'Content-Type': 'application/json' };
+  if (token) h['Authorization'] = 'Bearer ' + token;
+  const r = await fetch('/api' + url, { ...opts, headers: { ...h, ...(opts.headers||{}) } });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || 'Error');
+  return d;
+}
+
+// ── HOME ──
+async function loadCities() {
+  try {
+    const cities = await api('/esquelas/ciudades');
+    const sel = document.getElementById('sCiudad');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— Todas las ciudades —</option>';
+    cities.forEach(c => { const o = document.createElement('option'); o.value=c; o.textContent=c; if(c===cur) o.selected=true; sel.appendChild(o); });
+  } catch(e) {}
+}
+
+async function loadEsquelas(pg = 1) {
+  curPage = pg;
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  const n = document.getElementById('sNombre').value.trim();
+  const c = document.getElementById('sCiudad').value;
+  const d = document.getElementById('sDesde').value;
+  const h = document.getElementById('sHasta').value;
+  const p = new URLSearchParams({ page: pg, limit: 12 });
+  if (n) p.set('nombre', n); if (c) p.set('ciudad', c);
+  if (d) p.set('desde', d);  if (h) p.set('hasta', h);
+  try {
+    const data = await api('/esquelas?' + p);
+    renderCards(data.esquelas, grid);
+    document.getElementById('resultCount').textContent = `${data.esquelas.length} de ${data.total} esquela${data.total!==1?'s':''}`;
+    renderPages(data.total, 12, pg);
+  } catch(e) {
+    grid.innerHTML = '<div class="empty"><div class="e-icon">✝</div><p>Error al cargar.</p></div>';
+  }
+}
+
+function buscar() { loadEsquelas(1); }
+function limpiar() {
+  ['sNombre','sDesde','sHasta'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('sCiudad').value = '';
+  loadEsquelas(1);
+}
+document.getElementById('sNombre').addEventListener('keydown', e => { if (e.key==='Enter') buscar(); });
+
+function renderCards(list, grid) {
+  grid.innerHTML = '';
+  if (!list.length) { grid.innerHTML = '<div class="empty"><div class="e-icon">✝</div><p>No se han encontrado esquelas.</p></div>'; return; }
+  list.forEach((p, i) => {
+    const parts = p.nombre.split(' ');
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = `${Math.min(i,7)*0.07}s`;
+    const isNew = new Date() - new Date(p.creado_en) < 86400000*3;
+    const badge = isNew ? '<span class="badge badge-new">Nueva</span>' : '';
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="card-cross">✝</div>
+        <div class="card-name">${parts[0]}<br>${parts.slice(1).join(' ')}${badge}</div>
+        <div class="card-dates">✦ ${p.nacimiento} — ${p.fallecimiento} ✦</div>
+      </div>
+      <div class="card-body">
+        <div class="card-city">📍 ${p.ciudad}</div>
+        <div class="card-excerpt">${p.texto.substring(0,115)}${p.texto.length>115?'…':''}</div>
+        <div class="card-familia"><strong>Familia:</strong> ${(p.familia||'—').substring(0,65)}${(p.familia||'').length>65?'…':''}</div>
+      </div>
+      <div class="card-foot">
+        <div class="card-funeral-txt"><strong>Funeral:</strong><br>${(p.funeral||'No indicado').substring(0,46)}${(p.funeral||'').length>46?'…':''}</div>
+        <button class="btn btn-outline btn-sm" onclick="openModal(${p.id})">Ver esquela</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function renderPages(total, limit, page) {
+  const pages = Math.ceil(total / limit);
+  const pg = document.getElementById('pagination');
+  pg.innerHTML = '';
+  if (pages <= 1) return;
+  const mk = (lbl, tp, dis, act) => {
+    const b = document.createElement('button');
+    b.className = 'pg-btn' + (act?' active':'');
+    b.textContent = lbl; b.disabled = dis;
+    if (!dis) b.onclick = () => loadEsquelas(tp);
+    pg.appendChild(b);
+  };
+  mk('← Anterior', page-1, page===1);
+  for (let i=1; i<=pages; i++) {
+    if (i===1||i===pages||Math.abs(i-page)<=1) mk(i,i,false,i===page);
+    else if (Math.abs(i-page)===2) { const s=document.createElement('span'); s.textContent='…'; s.style.cssText='padding:7px 5px;color:var(--warm-gray);'; pg.appendChild(s); }
+  }
+  mk('Siguiente →', page+1, page===pages);
+}
+
+// ── MODAL ──
+async function openModal(id) {
+  try {
+    const p = await api('/esquelas/' + id);
+    document.getElementById('mNombre').textContent  = p.nombre;
+    document.getElementById('mFechas').textContent  = `✦ ${p.nacimiento} — ${p.fallecimiento} ✦`;
+    document.getElementById('mCiudad').textContent  = p.ciudad;
+    document.getElementById('mTexto').textContent   = p.texto;
+    document.getElementById('mFamilia').textContent = p.familia  || 'No indicada';
+    document.getElementById('mFuneral').textContent = p.funeral  || 'No indicado';
+    document.getElementById('mEntierro').textContent= p.entierro || 'No indicado';
+    document.getElementById('modalOverlay').classList.add('open');
+  } catch(e) {}
+}
+function closeModal(e) { if (!e || e.target===document.getElementById('modalOverlay')) document.getElementById('modalOverlay').classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeModal(); });
+
+// ── AUTH ──
+function switchTab(t) {
+  document.getElementById('tab-login').classList.toggle('active', t==='login');
+  document.getElementById('tab-register').classList.toggle('active', t==='register');
+  document.getElementById('form-login').classList.toggle('active', t==='login');
+  document.getElementById('form-register').classList.toggle('active', t==='register');
+}
+function showAlert(id, msg, type='error') { document.getElementById(id).innerHTML = `<div class="alert alert-${type}">${msg}</div>`; }
+function setErr(fg, on) { document.getElementById(fg).classList.toggle('err-active', on); }
+
+async function doLogin() {
+  const email = document.getElementById('lEmail').value.trim();
+  const pass  = document.getElementById('lPass').value;
+  setErr('fg-le', !email); setErr('fg-lp', !pass);
+  if (!email || !pass) return;
+  try {
+    const d = await api('/auth/login', { method:'POST', body: JSON.stringify({email, password: pass}) });
+    token = d.token; user = d.user;
+    localStorage.setItem('esm_token', token); localStorage.setItem('esm_user', JSON.stringify(user));
+    updateUI(); showPage('home');
+  } catch(e) { showAlert('loginAlert', e.message); }
+}
+
+async function doRegister() {
+  const nombre = document.getElementById('rNombre').value.trim();
+  const email  = document.getElementById('rEmail').value.trim();
+  const pass   = document.getElementById('rPass').value;
+  setErr('fg-rn', !nombre); setErr('fg-re', !email); setErr('fg-rp', pass.length<6);
+  if (!nombre||!email||pass.length<6) return;
+  try {
+    const d = await api('/auth/register', { method:'POST', body: JSON.stringify({nombre, email, password: pass}) });
+    token = d.token; user = d.user;
+    localStorage.setItem('esm_token', token); localStorage.setItem('esm_user', JSON.stringify(user));
+    updateUI(); showPage('home');
+  } catch(e) { showAlert('regAlert', e.message); }
+}
+
+// ── PUBLISH ──
+function fmtF(str) { if(!str) return ''; const [y,m,d]=str.split('-'); return `${parseInt(d)} de ${MESES[parseInt(m)-1]} de ${y}`; }
+function updatePrev() {
+  const n=document.getElementById('pNombre').value.trim(), nac=document.getElementById('pNac').value,
+        f=document.getElementById('pFall').value, c=document.getElementById('pCiudad').value.trim(),
+        t=document.getElementById('pTexto').value.trim();
+  document.getElementById('prevBox').classList.toggle('live', !!(n||t));
+  document.getElementById('pvN').textContent = n||'Nombre Apellidos';
+  document.getElementById('pvF').textContent = `✦ ${nac?fmtF(nac):'Nacimiento'} — ${f?fmtF(f):'Fallecimiento'} ✦`;
+  document.getElementById('pvC').textContent = c||'Ciudad';
+  document.getElementById('pvT').textContent = t||'El texto aparecerá aquí…';
+}
+function validPub() {
+  const c=[['pNombre','fg-pn'],['pCiudad','fg-pc'],['pNac','fg-pnac'],['pFall','fg-pfall'],['pTexto','fg-pt']];
+  let ok=true; c.forEach(([id,fg])=>{ const v=document.getElementById(id).value.trim(); setErr(fg,!v); if(!v) ok=false; }); return ok;
+}
+async function publicar() {
+  if (!validPub()) { document.querySelector('.form-card').scrollIntoView({behavior:'smooth',block:'start'}); return; }
+  const body = {
+    nombre: document.getElementById('pNombre').value.trim(),
+    nacimiento: fmtF(document.getElementById('pNac').value),
+    fallecimiento: fmtF(document.getElementById('pFall').value),
+    fecha_fallecimiento: document.getElementById('pFall').value,
+    ciudad: document.getElementById('pCiudad').value.trim(),
+    texto: document.getElementById('pTexto').value.trim(),
+    familia: document.getElementById('pFamilia').value.trim(),
+    funeral: document.getElementById('pFuneral').value.trim(),
+    entierro: document.getElementById('pEntierro').value.trim(),
+  };
+  try {
+    await api('/esquelas', { method:'POST', body: JSON.stringify(body) });
+    showAlert('pubAlert', '✦ Esquela enviada. Será revisada por el administrador antes de publicarse.', 'success');
+    resetPub(false);
+    document.getElementById('pubAlert').scrollIntoView({behavior:'smooth',block:'start'});
+  } catch(e) { showAlert('pubAlert', e.message); }
+}
+function resetPub(clearAlert=true) {
+  ['pNombre','pCiudad','pNac','pFall','pTexto','pFamilia','pFuneral','pEntierro'].forEach(id=>document.getElementById(id).value='');
+  ['fg-pn','fg-pc','fg-pnac','fg-pfall','fg-pt'].forEach(fg=>setErr(fg,false));
+  updatePrev();
+  if (clearAlert) document.getElementById('pubAlert').innerHTML='';
+}
+
+// ── ADMIN ──
+function switchAdmin(sec, el) {
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('as-'+sec).classList.add('active');
+  document.querySelectorAll('.admin-nav-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  if(sec==='pend') loadPend();
+  if(sec==='all')  loadAll(adminFlt);
+  if(sec==='stats') loadStats();
+}
+async function loadStats() {
+  try {
+    const s = await api('/esquelas/admin/stats');
+    document.getElementById('stTotal').textContent = s.total;
+    document.getElementById('stApro').textContent  = s.aprobadas;
+    document.getElementById('stPend').textContent  = s.pendientes;
+    document.getElementById('stUsers').textContent = s.usuarios;
+    document.getElementById('badgePend').textContent = s.pendientes;
+  } catch(e) {}
+}
+async function loadPend() {
+  const el = document.getElementById('tablePend');
+  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  try { const d = await api('/esquelas/admin/all?estado=pendiente&limit=50'); el.innerHTML = mkTable(d.esquelas); }
+  catch(e) { el.innerHTML = '<p style="color:var(--warm-gray);padding:20px;">Error.</p>'; }
+}
+async function loadAll(estado='') {
+  adminFlt = estado;
+  const el = document.getElementById('tableAll');
+  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  try { const d = await api('/esquelas/admin/all?limit=50'+(estado?'&estado='+estado:'')); el.innerHTML = mkTable(d.esquelas); }
+  catch(e) { el.innerHTML = '<p style="color:var(--warm-gray);padding:20px;">Error.</p>'; }
+}
+function filterAll(estado, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); loadAll(estado);
+}
+function mkTable(list) {
+  if (!list.length) return '<p style="color:var(--warm-gray);padding:20px;font-size:0.85rem;">Sin resultados.</p>';
+  return `<table class="admin-table">
+    <thead><tr><th>Nombre</th><th>Ciudad</th><th>Fallecimiento</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody>${list.map(e=>`<tr>
+      <td style="font-family:'Cormorant Garamond',serif;font-size:0.95rem;max-width:190px;">${e.nombre}</td>
+      <td>${e.ciudad}</td><td>${e.fallecimiento}</td>
+      <td><span class="eb eb-${e.estado}">${e.estado}</span></td>
+      <td><div class="td-act">
+        ${e.estado!=='aprobada'  ? `<button class="btn btn-approve btn-sm" onclick="setEstado(${e.id},'aprobada')">Aprobar</button>` : ''}
+        ${e.estado!=='rechazada' ? `<button class="btn btn-reject btn-sm"  onclick="setEstado(${e.id},'rechazada')">Rechazar</button>` : ''}
+        <button class="btn btn-del" onclick="delEsquela(${e.id})">✕</button>
+      </div></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+async function setEstado(id, estado) {
+  try { await api('/esquelas/admin/'+id+'/estado', {method:'PATCH', body:JSON.stringify({estado})}); loadStats(); loadPend(); loadAll(adminFlt); }
+  catch(e) { alert(e.message); }
+}
+async function delEsquela(id) {
+  if (!confirm('¿Borrar esta esquela?')) return;
+  try { await api('/esquelas/admin/'+id, {method:'DELETE'}); loadStats(); loadPend(); loadAll(adminFlt); }
+  catch(e) { alert(e.message); }
+}
+
+// ── INIT ──
+updateUI(); loadCities(); loadEsquelas();
+</script>
+</body>
+</html>
